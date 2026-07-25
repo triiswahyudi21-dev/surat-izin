@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Aplikasi Surat Izin Sekolah</title>
+    <!-- Font Inter & Styling Modern -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #059669;
+            --primary-hover: #047857;
+            --bg: #f1f5f9;
+            --card: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 12px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            background: var(--card);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+            padding: 20px 16px;
+            margin: auto 0;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .header p {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .section-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-top: 16px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #334155;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            background-color: #f8fafc;
+            border-radius: 10px;
+            font-size: 14px;
+            color: var(--text-main);
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            background-color: #fff;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15);
+        }
+
+        .file-upload-box {
+            border: 2px dashed var(--border);
+            padding: 12px;
+            border-radius: 10px;
+            background-color: #f8fafc;
+            text-align: center;
+        }
+
+        input[type="file"] {
+            padding: 6px;
+            background: transparent;
+            border: none;
+            font-size: 12px;
+        }
+
+        .btn {
+            width: 100%;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+
+        .btn:active {
+            transform: scale(0.99);
+        }
+
+        .btn-wa {
+            background-color: #25D366;
+        }
+
+        .btn-wa:hover {
+            background-color: #1ebc57;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            justify-content: center;
+            align-items: flex-end;
+            z-index: 1000;
+        }
+
+        @media (min-width: 480px) {
+            .modal {
+                align-items: center;
+                padding: 16px;
+            }
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 20px 20px 0 0;
+            width: 100%;
+            max-width: 480px;
+            max-height: 85vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @media (min-width: 480px) {
+            .modal-content {
+                border-radius: 16px;
+            }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .surat-box {
+            background: #fff;
+            border: 1px dashed #cbd5e1;
+            padding: 16px;
+            font-family: monospace, Courier, monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #1e293b;
+            white-space: pre-wrap;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-secondary {
+            background-color: #e2e8f0;
+            color: #475569;
+        }
+
+        .hint-text {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h2>Surat Izin Sekolah</h2>
+        <p>Isi formulir di bawah ini untuk mengirim surat izin ke wali kelas</p>
+    </div>
+    
+    <form id="suratForm">
+        <div class="section-title">Data Siswa</div>
+        <div class="form-group">
+            <label for="namaSiswa">Nama Lengkap Siswa</label>
+            <input type="text" id="namaSiswa" required>
+        </div>
+        <div class="form-group">
+            <label for="kelas">Kelas</label>
+            <input type="text" id="kelas" required>
+        </div>
+
+        <div class="section-title">Data Wali Kelas</div>
+        <div class="form-group">
+            <label for="namaWali">Nama Wali Kelas (Opsional)</label>
+            <input type="text" id="namaWali">
+        </div>
+        <div class="form-group">
+            <label for="noWa">Nomor WA Wali Kelas</label>
+            <input type="tel" id="noWa" placeholder="Contoh: 08123456789" required>
+        </div>
+
+        <div class="section-title">Keterangan Izin</div>
+        <div class="form-group">
+            <label for="jenisIzin">Jenis Izin</label>
+            <select id="jenisIzin" onchange="toggleDokterField()">
+                <option value="Sakit">Sakit</option>
+                <option value="Izin / Acara Keluarga">Izin / Acara Keluarga</option>
+                <option value="Hal Penting Lainnya">Lainnya</option>
+            </select>
+        </div>
+        
+        <div class="form-group" id="groupSuratDokter">
+            <label for="fileDokter">Lampiran Surat Dokter (Opsional)</label>
+            <div class="file-upload-box">
+                <input type="file" id="fileDokter" accept="image/*,.pdf">
+                <p class="hint-text">Format: Foto (JPG/PNG) atau Dokumen (PDF)</p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="tglIzin">Tanggal Izin</label>
+            <input type="date" id="tglIzin" required>
+        </div>
+        <div class="form-group">
+            <label for="detailAlasan">Alasan / Detail Penyebab</label>
+            <textarea id="detailAlasan" rows="3" required></textarea>
+        </div>
+
+        <div class="section-title">Data Orang Tua / Wali</div>
+        <div class="form-group">
+            <label for="namaOrtu">Nama Orang Tua / Wali</label>
+            <input type="text" id="namaOrtu" required>
+        </div>
+
+        <button type="submit" class="btn">
+            Preview & Kirim Surat
+        </button>
+    </form>
+</div>
+
+<!-- Modal Preview -->
+<div class="modal" id="modalPreview">
+    <div class="modal-content">
+        <h3 style="font-size: 16px; font-weight: 700; color: var(--text-main);">Preview Surat Izin</h3>
+        <div class="surat-box" id="suratTeks"></div>
+        <p class="hint-text" style="margin-bottom: 12px; color: #e11d48;" id="catatanLampiranWA"></p>
+        <div class="btn-group">
+            <button type="button" class="btn btn-secondary" onclick="tutupModal()">Edit</button>
+            <button type="button" class="btn btn-wa" onclick="kirimKeWA()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-1.099 4.019 4.142-1.086z"/></svg>
+                Kirim via WhatsApp
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('tglIzin').value = today;
+
+    let teksSuratFinal = "";
+    let nomorWaFinal = "";
+
+    function toggleDokterField() {
+        const jenis = document.getElementById('jenisIzin').value;
+        const groupDokter = document.getElementById('groupSuratDokter');
+        if (jenis === 'Sakit') {
+            groupDokter.style.display = 'block';
+        } else {
+            groupDokter.style.display = 'none';
+            document.getElementById('fileDokter').value = "";
+        }
+    }
+
+    function formatHariTanggalBulan(dateStr) {
+        if (!dateStr) return "";
+        const parts = dateStr.split('-');
+        const dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
+        
+        const opsi = { weekday: 'long', day: 'numeric', month: 'long' };
+        return dateObj.toLocaleDateString('id-ID', opsi);
+    }
+
+    document.getElementById('suratForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const namaSiswa = document.getElementById('namaSiswa').value;
+        const kelas = document.getElementById('kelas').value;
+        const namaWali = document.getElementById('namaWali').value;
+        const noWa = document.getElementById('noWa').value;
+        const jenisIzin = document.getElementById('jenisIzin').value;
+        const tglIzin = document.getElementById('tglIzin').value;
+        const detailAlasan = document.getElementById('detailAlasan').value;
+        const namaOrtu = document.getElementById('namaOrtu').value;
+        const fileDokterInput = document.getElementById('fileDokter');
+
+        const tanggalFormatted = formatHariTanggalBulan(tglIzin);
+        
+        let isiLampiran = "-";
+        let adaLampiran = false;
+
+        if (jenisIzin === 'Sakit' && fileDokterInput.files.length > 0) {
+            isiLampiran = "1 Lembar (Surat Dokter)";
+            adaLampiran = true;
+        }
+
+        // Simbol ``` di-escape dengan (```) menggunakan Monospace WA agar lurus rapi di HP
+        teksSuratFinal = 
+`\`\`\`Hal      : Surat Permohonan Izin Tidak Masuk Sekolah
+Lampiran : ${isiLampiran}\`\`\`
+
+Yth. Bapak/Ibu Wali Kelas ${kelas} ${namaWali ? '(' + namaWali + ')' : ''}
+Di Tempat
+
+Dengan hormat,
+
+Saya yang bertanda tangan di bawah ini, orang tua/wali dari siswa:
+
+\`\`\`• Nama  : ${namaSiswa}
+• Kelas : ${kelas}\`\`\`
+
+Memberitahukan bahwa anak kami tersebut di atas tidak dapat mengikuti kegiatan belajar mengajar pada hari ${tanggalFormatted} dikarenakan ${jenisIzin.toLowerCase()} (${detailAlasan}).${adaLampiran ? '\n\nBersama surat ini, kami lampirkan pula surat keterangan medis dari dokter.' : ''}
+
+Demikian surat izin ini kami sampaikan. Atas perhatian dan pengertian Bapak/Ibu Guru, kami ucapkan terima kasih.
+
+Hormat kami,
+Orang Tua/Wali Murid,
+
+
+(${namaOrtu})`;
+
+        // Konversi Format Nomor WA Ke 628xx
+        let cleanedNoWa = noWa.replace(/[^0-9]/g, '');
+        if (cleanedNoWa.startsWith('0')) {
+            cleanedNoWa = '62' + cleanedNoWa.slice(1);
+        }
+        nomorWaFinal = cleanedNoWa;
+
+        document.getElementById('suratTeks').innerText = teksSuratFinal;
+
+        const catElem = document.getElementById('catatanLampiranWA');
+        if (adaLampiran) {
+            catElem.innerText = "*Catatan: File/Foto Surat Dokter perlu Anda lampirkan manual di obrolan WhatsApp.";
+        } else {
+            catElem.innerText = "";
+        }
+
+        document.getElementById('modalPreview').style.display = 'flex';
+    });
+
+    function tutupModal() {
+        document.getElementById('modalPreview').style.display = 'none';
+    }
+
+    function kirimKeWA() {
+        if (!nomorWaFinal) {
+            alert('Nomor WhatsApp tidak valid');
+            return;
+        }
+        const url = `https://wa.me/${nomorWaFinal}?text=${encodeURIComponent(teksSuratFinal)}`;
+        window.open(url, '_blank');
+    }
+</script>
+
+</body>
+</html>
