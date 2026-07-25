@@ -39,7 +39,7 @@
             max-width: 480px;
             background: var(--card);
             border-radius: 16px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
             padding: 20px 16px;
             margin: auto 0;
         }
@@ -267,10 +267,10 @@
         </div>
         
         <div class="form-group" id="groupSuratDokter">
-            <label for="fileDokter">Lampiran Surat Dokter (Opsional)</label>
+            <label for="fileDokter">Lampiran Foto Surat Dokter (Opsional)</label>
             <div class="file-upload-box">
-                <input type="file" id="fileDokter" accept="image/*,.pdf">
-                <p class="hint-text">Format: Foto (JPG/PNG) atau Dokumen (PDF)</p>
+                <input type="file" id="fileDokter" accept="image/*">
+                <p class="hint-text">Format: Gambar Foto (JPG/PNG)</p>
             </div>
         </div>
 
@@ -300,7 +300,6 @@
     <div class="modal-content">
         <h3 style="font-size: 16px; font-weight: 700; color: var(--text-main);">Preview Surat Izin</h3>
         <div class="surat-box" id="suratTeks"></div>
-        <p class="hint-text" style="margin-bottom: 12px; color: #e11d48;" id="catatanLampiranWA"></p>
         <div class="btn-group">
             <button type="button" class="btn btn-secondary" onclick="tutupModal()">Edit</button>
             <button type="button" class="btn btn-wa" onclick="kirimKeWA()">
@@ -312,11 +311,11 @@
 </div>
 
 <script>
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('tglIzin').value = today;
+    document.getElementById('tglIzin').value = new Date().toISOString().split('T')[0];
 
     let teksSuratFinal = "";
     let nomorWaFinal = "";
+    let fileGambarSelected = null;
 
     function toggleDokterField() {
         const jenis = document.getElementById('jenisIzin').value;
@@ -333,9 +332,7 @@
         if (!dateStr) return "";
         const parts = dateStr.split('-');
         const dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
-        
-        const opsi = { weekday: 'long', day: 'numeric', month: 'long' };
-        return dateObj.toLocaleDateString('id-ID', opsi);
+        return dateObj.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long' });
     }
 
     document.getElementById('suratForm').addEventListener('submit', function(e) {
@@ -354,14 +351,13 @@
         const tanggalFormatted = formatHariTanggalBulan(tglIzin);
         
         let isiLampiran = "-";
-        let adaLampiran = false;
+        fileGambarSelected = null;
 
         if (jenisIzin === 'Sakit' && fileDokterInput.files.length > 0) {
+            fileGambarSelected = fileDokterInput.files[0];
             isiLampiran = "1 Lembar (Surat Dokter)";
-            adaLampiran = true;
         }
 
-        // Simbol ``` di-escape dengan (```) menggunakan Monospace WA agar lurus rapi di HP
         teksSuratFinal = 
 `\`\`\`Hal      : Surat Permohonan Izin Tidak Masuk Sekolah
 Lampiran : ${isiLampiran}\`\`\`
@@ -376,7 +372,7 @@ Saya yang bertanda tangan di bawah ini, orang tua/wali dari siswa:
 \`\`\`• Nama  : ${namaSiswa}
 • Kelas : ${kelas}\`\`\`
 
-Memberitahukan bahwa anak kami tersebut di atas tidak dapat mengikuti kegiatan belajar mengajar pada hari ${tanggalFormatted} dikarenakan ${jenisIzin.toLowerCase()} (${detailAlasan}).${adaLampiran ? '\n\nBersama surat ini, kami lampirkan pula surat keterangan medis dari dokter.' : ''}
+Memberitahukan bahwa anak kami tersebut di atas tidak dapat mengikuti kegiatan belajar mengajar pada hari ${tanggalFormatted} dikarenakan ${jenisIzin.toLowerCase()} (${detailAlasan}).${fileGambarSelected ? '\n\nBersama surat ini, kami lampirkan pula surat keterangan medis dari dokter.' : ''}
 
 Demikian surat izin ini kami sampaikan. Atas perhatian dan pengertian Bapak/Ibu Guru, kami ucapkan terima kasih.
 
@@ -386,7 +382,6 @@ Orang Tua/Wali Murid,
 
 (${namaOrtu})`;
 
-        // Konversi Format Nomor WA Ke 628xx
         let cleanedNoWa = noWa.replace(/[^0-9]/g, '');
         if (cleanedNoWa.startsWith('0')) {
             cleanedNoWa = '62' + cleanedNoWa.slice(1);
@@ -394,14 +389,6 @@ Orang Tua/Wali Murid,
         nomorWaFinal = cleanedNoWa;
 
         document.getElementById('suratTeks').innerText = teksSuratFinal;
-
-        const catElem = document.getElementById('catatanLampiranWA');
-        if (adaLampiran) {
-            catElem.innerText = "*Catatan: File/Foto Surat Dokter perlu Anda lampirkan manual di obrolan WhatsApp.";
-        } else {
-            catElem.innerText = "";
-        }
-
         document.getElementById('modalPreview').style.display = 'flex';
     });
 
@@ -409,11 +396,22 @@ Orang Tua/Wali Murid,
         document.getElementById('modalPreview').style.display = 'none';
     }
 
-    function kirimKeWA() {
-        if (!nomorWaFinal) {
-            alert('Nomor WhatsApp tidak valid');
-            return;
+    async function kirimKeWA() {
+        // Cek jika browser mendukung Web Share API dengan Berkas/File (Sangat Cocok Untuk HP)
+        if (fileGambarSelected && navigator.canShare && navigator.canShare({ files: [fileGambarSelected] })) {
+            try {
+                await navigator.share({
+                    files: [fileGambarSelected],
+                    text: teksSuratFinal,
+                    title: 'Surat Izin Sekolah'
+                });
+                return;
+            } catch (err) {
+                console.log('Share dibatalkan pengguna atau error:', err);
+            }
         }
+
+        // Fallback Biasa jika tidak memilih file atau di desktop browser
         const url = `https://wa.me/${nomorWaFinal}?text=${encodeURIComponent(teksSuratFinal)}`;
         window.open(url, '_blank');
     }
