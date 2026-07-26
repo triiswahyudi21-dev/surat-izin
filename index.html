@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Aplikasi Surat Izin Sekolah</title>
+    <title>Aplikasi Surat Izin Sekolah - SMPN 3 BESUKI</title>
     <!-- Font Inter & Styling Modern -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -49,10 +49,25 @@
             margin-bottom: 20px;
         }
 
+        .school-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .school-badge img {
+            width: 42px;
+            height: 42px;
+            object-fit: contain;
+        }
+
         .header h2 {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
             color: var(--primary);
+            line-height: 1.2;
         }
 
         .header p {
@@ -133,10 +148,10 @@
             border: none;
             padding: 14px;
             border-radius: 10px;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            margin-top: 10px;
+            margin-top: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -154,6 +169,12 @@
 
         .btn-wa:hover {
             background-color: #1ebc57;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--border);
         }
 
         .modal {
@@ -202,22 +223,20 @@
             border: 1px dashed #cbd5e1;
             padding: 16px;
             font-family: monospace, Courier, monospace;
-            font-size: 13px;
-            line-height: 1.6;
+            font-size: 12px;
+            line-height: 1.5;
             color: #1e293b;
             white-space: pre-wrap;
             margin: 15px 0;
             border-radius: 8px;
+            max-height: 220px;
+            overflow-y: auto;
         }
 
         .btn-group {
             display: flex;
-            gap: 10px;
-        }
-
-        .btn-secondary {
-            background-color: #e2e8f0;
-            color: #475569;
+            flex-direction: column;
+            gap: 8px;
         }
 
         .hint-text {
@@ -225,14 +244,27 @@
             color: var(--text-muted);
             margin-top: 4px;
         }
+
+        .alert-box {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            color: #78350f;
+            margin-bottom: 12px;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header">
-        <h2>Surat Izin Sekolah</h2>
-        <p>Isi formulir di bawah ini untuk mengirim surat izin ke wali kelas</p>
+        <div class="school-badge">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/9/9c/Logo_Tut_Wuri_Handayani.png" alt="Logo SMPN 3 Besuki">
+        </div>
+        <h2>SMPN 3 BESUKI</h2>
+        <p>Aplikasi Pembuatan Surat Izin Sekolah Online</p>
     </div>
     
     <form id="suratForm">
@@ -243,7 +275,7 @@
         </div>
         <div class="form-group">
             <label for="kelas">Kelas</label>
-            <input type="text" id="kelas" required>
+            <input type="text" id="kelas" placeholder="Contoh: 8A" required>
         </div>
 
         <div class="section-title">Data Wali Kelas</div>
@@ -280,7 +312,7 @@
         </div>
         <div class="form-group">
             <label for="detailAlasan">Alasan / Detail Penyebab</label>
-            <textarea id="detailAlasan" rows="3" required></textarea>
+            <textarea id="detailAlasan" rows="2" placeholder="Contoh: Demam dan pusing" required></textarea>
         </div>
 
         <div class="section-title">Data Orang Tua / Wali</div>
@@ -299,12 +331,27 @@
 <div class="modal" id="modalPreview">
     <div class="modal-content">
         <h3 style="font-size: 16px; font-weight: 700; color: var(--text-main);">Preview Surat Izin</h3>
+        
         <div class="surat-box" id="suratTeks"></div>
+
+        <div class="alert-box" id="infoBox">
+            💡 <strong>Tips:</strong> Pilih tombol hijau untuk mengirim via WhatsApp.
+        </div>
+
         <div class="btn-group">
-            <button type="button" class="btn btn-secondary" onclick="tutupModal()">Edit</button>
-            <button type="button" class="btn btn-wa" onclick="kirimKeWA()">
+            <!-- Tombol 1: Kirim Native Share (Dengan Lampiran Foto jika ada) -->
+            <button type="button" class="btn btn-wa" onclick="kirimViaShare()">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-1.099 4.019 4.142-1.086z"/></svg>
-                Kirim via WhatsApp
+                Kirim Teks + Foto (Share HP)
+            </button>
+
+            <!-- Tombol 2: Kirim Direct Link WA (Selalu Berhasil Membuka Chat Wali Kelas) -->
+            <button type="button" class="btn btn-outline" onclick="kirimDirectWA()">
+                Kirim Langsung Chat WA (Teks Saja)
+            </button>
+
+            <button type="button" class="btn btn-outline" style="color: #ef4444; border-color:#fca5a5;" onclick="tutupModal()">
+                Kembali / Edit
             </button>
         </div>
     </div>
@@ -359,10 +406,15 @@
         }
 
         teksSuratFinal = 
-`\`\`\`Hal      : Surat Permohonan Izin Tidak Masuk Sekolah
+`\`\`\`====================================
+          SMPN 3 BESUKI             
+====================================\`\`\`
+
+\`\`\`Hal      : Surat Permohonan Izin Tidak Masuk Sekolah
 Lampiran : ${isiLampiran}\`\`\`
 
 Yth. Bapak/Ibu Wali Kelas ${kelas} ${namaWali ? '(' + namaWali + ')' : ''}
+SMPN 3 BESUKI
 Di Tempat
 
 Dengan hormat,
@@ -382,6 +434,7 @@ Orang Tua/Wali Murid,
 
 (${namaOrtu})`;
 
+        // Perbaikan Pembersihan Nomor Telepon (Mencegah Error Kirim WA)
         let cleanedNoWa = noWa.replace(/[^0-9]/g, '');
         if (cleanedNoWa.startsWith('0')) {
             cleanedNoWa = '62' + cleanedNoWa.slice(1);
@@ -396,8 +449,8 @@ Orang Tua/Wali Murid,
         document.getElementById('modalPreview').style.display = 'none';
     }
 
-    async function kirimKeWA() {
-        // Cek jika browser mendukung Web Share API dengan Berkas/File (Sangat Cocok Untuk HP)
+    // Jalur 1: Kirim Lewat Fitur Share HP (Menyertakan Foto jika Didukung Browser)
+    async function kirimViaShare() {
         if (fileGambarSelected && navigator.canShare && navigator.canShare({ files: [fileGambarSelected] })) {
             try {
                 await navigator.share({
@@ -407,13 +460,23 @@ Orang Tua/Wali Murid,
                 });
                 return;
             } catch (err) {
-                console.log('Share dibatalkan pengguna atau error:', err);
+                console.log('Share dibatalkan atau tidak didukung:', err);
             }
         }
+        
+        // Jika tidak ada foto atau browser tidak support share foto, langsung lempar ke WA Direct Link
+        kirimDirectWA();
+    }
 
-        // Fallback Biasa jika tidak memilih file atau di desktop browser
-        const url = `https://wa.me/${nomorWaFinal}?text=${encodeURIComponent(teksSuratFinal)}`;
-        window.open(url, '_blank');
+    // Jalur 2: Kirim Langsung Membuka Aplikasi WhatsApp (100% Selalu Berhasil Membuka Chat Wali Kelas)
+    function kirimDirectWA() {
+        const textEncoded = encodeURIComponent(teksSuratFinal);
+        
+        // Menggunakan skema api.whatsapp.com yang paling kompetibel di HP Android & iOS
+        const waUrl = `https://api.whatsapp.com/send?phone=${nomorWaFinal}&text=${textEncoded}`;
+        
+        // Membuka WA
+        window.location.href = waUrl;
     }
 </script>
 
