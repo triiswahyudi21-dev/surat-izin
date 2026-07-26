@@ -267,14 +267,12 @@
             margin-bottom: 12px;
         }
 
-        /* ------------------------------------------------------------- */
-        /* TEMPLATE CETAK PDF SEMENTARA (Sembunyi di Layar Biasa)        */
-        /* ------------------------------------------------------------- */
+        /* TEMPLATE CETAK PDF SEMENTARA (Sembunyi di Layar Biasa) */
         #printArea {
             display: none;
         }
 
-        /* STYLES KHUSUS MEDIA CETAK/PDF DEFAULT (Sistem Browser/HP Tanpa Logo) */
+        /* STYLES KHUSUS MEDIA CETAK/PDF DEFAULT */
         @media print {
             body * {
                 visibility: hidden;
@@ -435,7 +433,7 @@
     </div>
 </div>
 
-<!-- Template Khusus Dokumen PDF Cetak Default (Tanpa Logo) -->
+<!-- Template Khusus Dokumen PDF Cetak Default -->
 <div id="printArea">
     <div class="print-header">
         <h2>SMPN 3 BESUKI</h2>
@@ -500,11 +498,11 @@
         const tanggalFormatted = formatHariTanggalBulan(tglIzin);
         let isiLampiran = (jenisIzin === 'Sakit' && fileDokterInput.files.length > 0) ? "1 Lembar (Surat Dokter)" : "-";
 
-        // Teks Format WA
+        // Teks Format WA dengan Garis Bantu Rapi (Presisi untuk layar HP)
         teksSuratFinal = 
-`*====================================*
-            *SMPN 3 BESUKI*           
-*====================================*
+`*========================*
+     *SMPN 3 BESUKI*     
+*========================*
 
 \`\`\`Hal      : Surat Permohonan Izin Tidak Masuk Sekolah
 Lampiran : ${isiLampiran}\`\`\`
